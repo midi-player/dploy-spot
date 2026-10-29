@@ -4,7 +4,6 @@ import {
   ArrowRight,
   AudioLines,
   Check,
-  Download,
   CircleUserRound,
   Mail,
   Menu,
@@ -221,7 +220,7 @@ function App() {
             <div className="result-details">
               <div className="ad-script"><p className="ad-script-label">Le texte de votre pub</p>{editingText ? <textarea className="ad-script-input" value={draftText} maxLength={300} autoFocus onChange={(e) => setDraftText(e.target.value)} /> : <p className="ad-script-text">{intention}</p>}<div className="ad-script-actions">{editingText ? <><button className="secondary-button" onClick={saveEditText} disabled={!draftText.trim()}><Check size={14} /> Valider</button><button className="secondary-button" onClick={() => setEditingText(false)}><X size={14} /> Annuler</button></> : <><button className="secondary-button" onClick={regenerateText} disabled={audioStatus === 'loading'}><RefreshCw size={14} /> Régénérer</button><button className="secondary-button" onClick={startEditText} disabled={audioStatus === 'loading'}><Pencil size={14} /> Modifier</button></>}</div></div>
               <div className="audio-player">{audioUrl && <audio ref={audioRef} src={audioUrl} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={() => setIsPlaying(false)} onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)} onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)} />}<div className="player-wave" onClick={(event) => { const audio = audioRef.current; if (!audio || !duration) return; const box = event.currentTarget.getBoundingClientRect(); audio.currentTime = ((event.clientX - box.left) / box.width) * duration; }}>{waveHeights.map((height, index) => <i key={index} className={duration && index / waveHeights.length < currentTime / duration ? 'played' : ''} style={{ height: `${height}%` }} />)}</div><div className="player-controls"><span>{formatTime(currentTime)}</span><button className="play-button" onClick={togglePlay} disabled={audioStatus !== 'ready'}>{isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}</button><span>{audioStatus === 'loading' ? '…' : formatTime(duration)}</span></div>{audioStatus === 'loading' && <p className="audio-status">Génération de la voix…</p>}{audioStatus === 'error' && <p className="audio-status">{audioError || "La voix n'a pas pu être générée."}</p>}</div>
-              <div className="result-actions"><button className="secondary-button" onClick={() => setMailOpen(true)} disabled={audioStatus !== 'ready'}><Mail size={15} /> Envoyer par mail</button><a className="secondary-button" href={audioUrl || undefined} download="spot-dploy.mp3" aria-disabled={audioStatus !== 'ready'} style={audioStatus !== 'ready' ? { opacity: 0.5, pointerEvents: 'none' } : undefined}><Download size={15} /> Télécharger</a></div>
+              <div className="result-actions"><button className="secondary-button" onClick={() => setMailOpen(true)} disabled={audioStatus !== 'ready'}><Mail size={15} /> Envoyer par mail</button></div>
             </div>
           </div>
         </div>
