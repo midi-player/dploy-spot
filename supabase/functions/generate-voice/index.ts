@@ -46,7 +46,8 @@ Deno.serve(async (request: Request) => {
     });
 
     if (!response.ok) {
-      return new Response(JSON.stringify({ error: "ElevenLabs a refusé la génération audio" }), { status: response.status, headers: jsonHeaders });
+      const details = await response.text();
+      return new Response(JSON.stringify({ error: "ElevenLabs a refusé la génération audio", details: details.slice(0, 500) }), { status: response.status, headers: jsonHeaders });
     }
 
     return new Response(await response.arrayBuffer(), {
