@@ -86,10 +86,17 @@ function App() {
     setAudioStatus('loading');
     setIsPlaying(false);
     setCurrentTime(0);
-    fetch('/api/tts', {
+    const apiUrl = import.meta.env.DEV
+      ? '/api/tts'
+      : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-voice`;
+    fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(import.meta.env.DEV ? {} : {
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        }),
       },
       body: JSON.stringify({ text: intention, era: era.year }),
       signal: controller.signal,

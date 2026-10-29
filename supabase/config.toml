@@ -1,1 +1,2 @@
-
+[functions.generate-voice]
+verify_jwt = false
