@@ -5,11 +5,9 @@ import {
   ArrowRight,
   AudioLines,
   Check,
-  CircleUserRound,
   Download,
   Library,
   Mail,
-  Menu,
   Pause,
   Pencil,
   Play,
@@ -208,7 +206,7 @@ function App() {
       <main className="landing-shell">
         <header className="landing-nav">
           <Logo onHome={() => setScreen('home')} />
-          <div className="nav-actions"><span className="desktop-only">La machine à remonter le temps</span><button type="button" className="library-link" onClick={() => setScreen('library')}><Library size={15} /> Mes spots</button><CircleUserRound size={18} /><Menu size={18} className="mobile-only" /></div>
+          <div className="nav-actions"><span className="desktop-only">Votre pub traverse les âges</span><button type="button" className="library-link" onClick={() => setScreen('library')}><Library size={15} /> Mes spots</button></div>
         </header>
         <section className="hero">
           <div className="hero-copy">
@@ -224,7 +222,7 @@ function App() {
             <OrbitCards />
           </div>
         </section>
-        <footer className="landing-footer"><Logo small onHome={() => window.scrollTo({ top: 0, behavior: 'smooth' })} /><span>In store · Out Loud</span><div className="footer-wave"><AudioLines size={34} /></div></footer>
+        <footer className="landing-footer"><Logo small onHome={() => window.scrollTo({ top: 0, behavior: 'smooth' })} /><span>In store · Out Loud</span><div className="footer-wave"><span className="brand-icon" style={{ '--brand-icon': `url(${brandIcon})` } as React.CSSProperties} role="img" aria-label="Dploy" /></div></footer>
       </main>
     );
   }
@@ -268,7 +266,7 @@ function App() {
     <main className="app-shell wizard-shell">
       <TopBar onHome={() => setScreen('home')} onLibrary={() => setScreen('library')} />
       <div className="wizard-layout">
-        <aside className="wizard-aside"><p className="back-link" onClick={back}><ArrowLeft size={14} /> Retour</p><p className="aside-kicker">The Ads Time Machine</p><h2>Donnez une autre dimension à votre message.</h2></aside>
+        <aside className="wizard-aside"><p className="back-link" onClick={back}><ArrowLeft size={14} /> Retour</p><p className="aside-kicker">Vos pubs à travers le temps</p><h2>Donnez une autre dimension à votre message.</h2></aside>
         <section className="wizard-panel">
           <Progress current={step} maxStep={maxStep} onSelect={goToStep} />
           {step === 1 && <ProductStep selected={product.name} onSelect={(item) => setProduct(item)} onOpenCustom={() => setCustomOpen(true)} />}
@@ -293,11 +291,11 @@ function App() {
 }
 
 function Logo({ small = false, onHome }: { small?: boolean; onHome?: () => void }) { const img = <img className="logo-claim" src={claimLogo} alt="Dploy – In store, Out Loud" />; return <div className={`logo ${small ? 'logo-small' : ''}`}>{onHome ? <button type="button" className="logo-link" onClick={onHome} aria-label="Retour à l'accueil">{img}</button> : img}</div>; }
-function TopBar({ onBack, onLibrary, onHome }: { onBack?: () => void; onLibrary?: () => void; onHome?: () => void }) { return <header className="topbar"><Logo onHome={onHome} /><span className="topbar-title">The Ads Time Machine</span><div className="topbar-actions">{onLibrary ? <button type="button" className="library-link" onClick={onLibrary}><Library size={15} /> Mes spots</button> : null}{onBack ? <button className="icon-button" onClick={onBack}><ArrowLeft size={15} /></button> : null}<CircleUserRound size={18} /><Menu size={18} /></div></header>; }
+function TopBar({ onBack, onLibrary, onHome }: { onBack?: () => void; onLibrary?: () => void; onHome?: () => void }) { return <header className="topbar"><Logo onHome={onHome} /><span className="topbar-title">Vos pubs à travers le temps</span><div className="topbar-actions">{onLibrary ? <button type="button" className="library-link" onClick={onLibrary}><Library size={15} /> Mes spots</button> : null}{onBack ? <button className="icon-button" onClick={onBack}><ArrowLeft size={15} /></button> : null}</div></header>; }
 function Progress({ current, maxStep, onSelect }: { current: number; maxStep: number; onSelect: (step: number) => void }) { return <div className="progress">{steps.map((label, index) => <button type="button" className={`progress-step ${index + 1 <= current ? 'done' : ''} ${index + 1 <= maxStep && index + 1 !== current ? 'reachable' : ''}`} key={label} disabled={index + 1 > maxStep || index + 1 === current} onClick={() => onSelect(index + 1)}><span>{index + 1 < current ? <Check size={11} /> : index + 1}</span><b>{label}</b></button>)}</div>; }
 function ProductStep({ selected, onSelect, onOpenCustom }: { selected: string; onSelect: (item: Product) => void; onOpenCustom: () => void }) { const isCustom = !products.some((item) => item.name === selected); return <div className="step-content"><p className="section-label">01 / Sélection</p><h1>Que voulez-vous<br />promouvoir ?</h1><p className="step-intro">Choisissez un produit pour lequel créer votre spot.</p><div className="product-grid">{products.map((item) => <button className={`product-card ${selected === item.name ? 'selected' : ''}`} key={item.name} onClick={() => onSelect(item)}><div className="product-image">{item.image ? <img src={item.image} alt="" /> : <Sparkles size={26} className="product-placeholder" />}</div><span>{item.name}</span>{selected === item.name && <i><Check size={11} /></i>}</button>)}<button className={`product-card custom-card ${isCustom ? 'selected' : ''}`} onClick={onOpenCustom}><span className="custom-ou">OU</span>{isCustom ? <span className="custom-value">{selected}</span> : <span className="custom-hint">Tapez votre<br />propre produit</span>}{isCustom && <i><Check size={11} /></i>}</button></div></div>; }
 function EraStep({ selected, onSelect }: { selected: string; onSelect: (item: Era) => void }) { return <div className="step-content"><p className="section-label">02 / Atmosphère</p><h1>Choisissez maintenant<br />une époque</h1><p className="step-intro">Chaque époque a son propre ton, son style, ses émotions.</p><div className="era-grid">{eras.map((item) => <button className={`era-card ${selected === item.name ? 'selected' : ''}`} key={item.name} onClick={() => onSelect(item)}><img src={item.image} alt="" /><span>· {item.name}</span><i>{selected === item.name ? <Check size={11} /> : ''}</i></button>)}</div></div>; }
-function IntentStep({ value, onChange, product, eraYear }: { value: string; onChange: (value: string, manual?: boolean) => void; product: string; eraYear: string }) { return <div className="step-content intent-content"><p className="section-label">03 / Direction</p><h1>Voici votre intention</h1><p className="step-intro">Décrivez le message que votre publicité doit faire passer.</p><div className="intent-layout"><div><div className="textarea-wrap"><button className="ai-icon" type="button" title="Générer une phrase avec l’IA" onClick={() => onChange(generatePhrase(product, eraYear, value), false)}><Sparkles size={16} /></button><textarea value={value} maxLength={300} onChange={(event) => onChange(event.target.value)} /><span>{value.length}/300</span></div><button className="ai-button" type="button" onClick={() => onChange(generatePhrase(product, eraYear, value), false)}><RefreshCw size={14} /> Régénérer</button></div><div className="preparing"><div className="preparing-ring"><img className="brand-icon-image" src={brandIcon} alt="Dploy" /></div><span>Préparation<br />du voyage temporel...</span></div></div></div>; }
+function IntentStep({ value, onChange, product, eraYear }: { value: string; onChange: (value: string, manual?: boolean) => void; product: string; eraYear: string }) { return <div className="step-content intent-content"><p className="section-label">03 / Direction</p><h1>Voici votre intention</h1><p className="step-intro">Décrivez le message que votre publicité doit faire passer.</p><div className="intent-layout"><div><div className="textarea-wrap"><button className="ai-icon" type="button" title="Générer une phrase avec l’IA" onClick={() => onChange(generatePhrase(product, eraYear, value), false)}><Sparkles size={16} /></button><textarea value={value} maxLength={300} onChange={(event) => onChange(event.target.value)} /><span>{value.length}/300</span></div><button className="ai-button" type="button" onClick={() => onChange(generatePhrase(product, eraYear, value), false)}><RefreshCw size={14} /> Régénérer</button></div><div className="preparing"><div className="preparing-ring"><span className="brand-icon" style={{ '--brand-icon': `url(${brandIcon})` } as React.CSSProperties} role="img" aria-label="Dploy" /></div><span>Préparation<br />du voyage temporel...</span></div></div></div>; }
 function OrbitCard({ className, label, image }: { className: string; label: string; image: string }) { return <div className={className}><img key={image} className="orbit-img" src={image} alt="" /><span key={label} className="orbit-label">{label}</span><b>+</b></div>; }
 
 const orbitPool = [...eras.map((item) => ({ label: item.name, image: item.image })), ...products.map((item) => ({ label: item.name, image: item.image }))];

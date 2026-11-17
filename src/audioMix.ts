@@ -1,6 +1,9 @@
-import music50sUrl from '@/audio/50s.mp3.mpeg?url';
-import music80sUrl from '@/audio/80s-v2.mp3.mpeg?url';
-import musicMedievalUrl from '@/audio/MoyenAge.mp3.mpeg?url';
+import musicMedievalUrl from '@/audio/MoyenAge.mp3?url';
+import music50sUrl from '@/audio/50s.mp3?url';
+import music80sUrl from '@/audio/80s.mp3?url';
+import music2020Url from '@/audio/2020.mp3?url';
+import musicFuturUrl from '@/audio/Futur.mp3?url';
+import musicXmasUrl from '@/audio/Xmas_mood.mp3?url';
 
 const INTRO = 2;       // seconds of music before voice starts
 const OUTRO = 2.5;     // seconds of music after voice ends
@@ -11,6 +14,9 @@ const eraMusicUrl: Record<string, string> = {
   '1500': musicMedievalUrl,
   '1950': music50sUrl,
   '1980': music80sUrl,
+  '2020': music2020Url,
+  '2500': musicFuturUrl,
+  'Noël': musicXmasUrl,
 };
 
 function encodeWav(buffer: AudioBuffer): Blob {

@@ -67,7 +67,7 @@ function elevenLabsProxy(env: Record<string, string>): Plugin {
           try {
             const { text, era } = JSON.parse(body) as { text?: string; era?: string };
             const apiKey = env.ELEVENLABS_API_KEY;
-            const voiceId = env[`ELEVENLABS_VOICE_${era}`] || env.ELEVENLABS_VOICE_ID;
+            const voiceId = (era === 'Noël' ? env.ELEVENLABS_Pere_Noel : env[`ELEVENLABS_VOICE_${era}`]) || env.ELEVENLABS_VOICE_ID;
             if (!apiKey || !voiceId || !text?.trim()) {
               res.statusCode = 400;
               res.end('Missing ELEVENLABS_API_KEY, voice id or text');
