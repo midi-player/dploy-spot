@@ -20,7 +20,11 @@ Deno.serve(async (request: Request) => {
     const text = typeof body.text === "string" ? body.text.trim().slice(0, 300) : "";
     const era = typeof body.era === "string" ? body.era : "";
     const apiKey = Deno.env.get("ELEVENLABS_API_KEY");
-    const voiceId = Deno.env.get(`ELEVENLABS_VOICE_${era}`) ?? Deno.env.get("ELEVENLABS_VOICE_ID");
+    const voiceId = era === "1500"
+      ? "WG2N3ZIZa50759A2vXlt"
+      : era === "1980"
+        ? "TBdJAxIBr3n1qyPrbqln"
+        : Deno.env.get(`ELEVENLABS_VOICE_${era}`) ?? Deno.env.get("ELEVENLABS_VOICE_ID");
 
     if (!text || !apiKey || !voiceId) {
       return new Response(JSON.stringify({ error: "Configuration audio incomplète" }), { status: 400, headers: jsonHeaders });
