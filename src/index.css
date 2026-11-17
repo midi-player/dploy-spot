@@ -74,7 +74,7 @@ button { cursor: pointer; }
 :root { --dusty-blue: #8199a5; --mist-blue: #d0e1ef; --sage-green: #7c8c7d; --sunset-red: #e05858; --pulse-lime: #ecf489; --soft-gray: #f1f1f2; --ivory: #fbf9f1; --paper-craft: #e1dbd3; --monitor-screen: #2e3738; --neutral-ink: #232839; }
 
 /* Brand icon (white SVG) used as a coloured mask */
-.brand-icon { display: block; width: 62%; aspect-ratio: 1110 / 468; background: var(--neutral-ink); -webkit-mask: var(--brand-icon) center / contain no-repeat; mask: var(--brand-icon) center / contain no-repeat; }
+.brand-icon-image { display: block; width: 62%; height: auto; object-fit: contain; }
 
 /* Logo claim is white in the file: render it in Neutral Ink on every (now light) screen */
 .logo-claim { filter: invert(1); }
@@ -92,7 +92,7 @@ button { cursor: pointer; }
 .orbit-two { border-color: rgba(224,88,88,.55); }
 .orbit-three { border-color: rgba(35,40,57,.12); }
 .sound-core { background: var(--sunset-red); border: 0; color: #fff; box-shadow: 0 10px 30px rgba(224,88,88,.35); }
-.sound-core .brand-icon { background: #fff; width: 66%; }
+.sound-core .brand-icon-image { width: 66%; }
 .orbit-card { background: #fff; border-color: transparent; color: var(--neutral-ink); box-shadow: 0 12px 28px rgba(35,40,57,.18); }
 .orbit-card b { color: var(--sunset-red); }
 .footer-wave { color: var(--sunset-red); }
@@ -113,7 +113,7 @@ button { cursor: pointer; }
 .modal-close { background: var(--mist-blue); color: var(--neutral-ink); }
 .preparing-ring { border-color: var(--sunset-red); color: var(--sunset-red); }
 .preparing-ring:before { border-color: var(--mist-blue); }
-.preparing-ring .brand-icon { background: var(--sunset-red); width: 96px; }
+.preparing-ring .brand-icon-image { width: 96px; }
 
 /* -- Result: bright, with confetti-coloured bars -- */
 .result-shell { background: var(--mist-blue); color: var(--neutral-ink); }
@@ -139,11 +139,11 @@ button { cursor: pointer; }
 .preparing-ring { animation: ringRipple 2.4s ease-out infinite; }
 .preparing-ring:before { border-color: transparent; border-top-color: var(--sunset-red); border-right-color: var(--sunset-red); animation: ringSpin 1.8s linear infinite; }
 .preparing-ring:after { inset: 0; width: auto; height: auto; top: 0; right: 0; background: radial-gradient(circle at 50% 0, var(--sunset-red) 0 5px, transparent 6px); border-radius: 50%; animation: ringSpin 3.2s linear infinite reverse; }
-.preparing-ring .brand-icon { animation: logoBreathe 2.4s ease-in-out infinite; }
+.preparing-ring .brand-icon-image { animation: logoBreathe 2.4s ease-in-out infinite; }
 @keyframes ringSpin { to { transform: rotate(360deg); } }
 @keyframes ringRipple { 0% { box-shadow: 0 0 0 0 rgba(224,88,88,.35); } 100% { box-shadow: 0 0 0 26px rgba(224,88,88,0); } }
 @keyframes logoBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-@media (prefers-reduced-motion: reduce) { .preparing-ring, .preparing-ring:before, .preparing-ring:after, .preparing-ring .brand-icon { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .preparing-ring, .preparing-ring:before, .preparing-ring:after, .preparing-ring .brand-icon-image { animation: none !important; } }
 
 /* Library page */
 .library-link { display: inline-flex; align-items: center; gap: 7px; border: 1px solid currentColor; background: transparent; color: inherit; border-radius: 20px; padding: 7px 14px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; opacity: .9; }
