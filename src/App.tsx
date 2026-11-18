@@ -238,7 +238,7 @@ function App() {
         <div className="result-backdrop" aria-hidden="true"><div className="result-glow" /><div className={`result-bars ${isPlaying ? 'playing' : ''} ${audioStatus === 'loading' ? 'loading' : ''}`}>{resultBars.map((height, index) => <i key={index} style={{ height: `${height}%`, animationDelay: `${(index % 14) * -0.13}s` }} />)}</div></div>
         {(audioStatus === 'loading' || audioStatus === 'idle') && (
           <div className="gen-overlay" role="status" aria-live="polite">
-            <div className="preparing-ring"><span className="brand-icon" style={{ '--brand-icon': `url(${brandIcon})` } as React.CSSProperties} aria-hidden="true" /></div>
+            <div className="preparing-ring"><img className="brand-icon-image" src={brandIcon} alt="Dploy" /></div>
             <h2>Préparation du spot</h2>
             <p>Écriture de la voix et mixage de la musique…</p>
           </div>
