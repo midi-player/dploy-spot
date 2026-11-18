@@ -139,7 +139,7 @@ button { cursor: pointer; }
 .preparing-ring { animation: ringRipple 2.4s ease-out infinite; }
 .preparing-ring:before { border-color: transparent; border-top-color: var(--sunset-red); border-right-color: var(--sunset-red); animation: ringSpin 1.8s linear infinite; }
 .preparing-ring:after { inset: 0; width: auto; height: auto; top: 0; right: 0; background: radial-gradient(circle at 50% 0, var(--sunset-red) 0 5px, transparent 6px); border-radius: 50%; animation: ringSpin 3.2s linear infinite reverse; }
-.preparing-ring .brand-icon-image { animation: logoBreathe 2.4s ease-in-out infinite; }
+.preparing-ring .brand-icon-image { filter: brightness(0) saturate(100%) invert(43%) sepia(68%) saturate(1246%) hue-rotate(318deg) brightness(93%) contrast(88%); animation: logoBreathe 2.4s ease-in-out infinite; }
 @keyframes ringSpin { to { transform: rotate(360deg); } }
 @keyframes ringRipple { 0% { box-shadow: 0 0 0 0 rgba(224,88,88,.35); } 100% { box-shadow: 0 0 0 26px rgba(224,88,88,0); } }
 @keyframes logoBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
