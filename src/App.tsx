@@ -20,6 +20,9 @@ import {
 import { eraThemes, generatePhrase } from '@/eraThemes';
 import claimLogo from '@/assets/Claim-OutLoud-white.svg';
 import brandIcon from '@/assets/dploy-brand-icon-white.svg';
+import maillotImage from '@/assets/maillot.svg';
+import calendrierImage from '@/assets/calendrier.svg';
+import sapinImage from '@/assets/sapin.svg';
 import noelImage from '@/assets/noel.svg';
 import { mixVoiceWithMusic } from '@/audioMix';
 
@@ -32,10 +35,10 @@ const products: Product[] = [
   { name: 'Glaces', image: 'https://images.pexels.com/photos/19087695/pexels-photo-19087695.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#f4a9bd' },
   { name: 'Tomates', image: 'https://images.pexels.com/photos/18254763/pexels-photo-18254763.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#ed5c42' },
   { name: 'Sardines', image: 'https://images.pexels.com/photos/20141098/pexels-photo-20141098.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#7895ad' },
-  { name: 'Saumon', image: 'https://images.pexels.com/photos/8696472/pexels-photo-8696472.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#e86c47' },
-  { name: 'Viande', image: 'https://images.pexels.com/photos/1314041/pexels-photo-1314041.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#a8544e' },
+  { name: 'Maillots de foot', image: maillotImage, accent: '#e05858' },
+  { name: 'Calendriers de l\'avent', image: calendrierImage, accent: '#ecf489' },
+  { name: 'Sapins de Noël', image: sapinImage, accent: '#7c8c7d' },
   { name: 'Savon', image: 'https://images.pexels.com/photos/6930879/pexels-photo-6930879.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#dce0da' },
-  { name: 'Collagène Marin', image: 'https://images.pexels.com/photos/6475113/pexels-photo-6475113.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#0a6b3b' },
   { name: 'Douche Litchi', image: 'https://images.pexels.com/photos/27689938/pexels-photo-27689938.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#3b5cc4' },
   { name: 'Gigoteuse bébé', image: 'https://images.pexels.com/photos/16222075/pexels-photo-16222075.jpeg?auto=compress&cs=tinysrgb&h=650&w=940', accent: '#1e8fc4' },
 ];
@@ -169,9 +172,9 @@ function App() {
     }
   };
 
-  const regenerateText = () => { setEditingText(false); setIntention(generatePhrase(product.name, era.year, intention)); setIntentionEdited(false); setPhraseKey(`${product.name}|${era.year}`); };
+  const regenerateText = () => { setEditingText(false); const fresh = generatePhrase(product.name, era.year, intention); if (audioKeyRef.current !== `${era.year}|${fresh}`) setAudioStatus('loading'); setIntention(fresh); setIntentionEdited(false); setPhraseKey(`${product.name}|${era.year}`); };
   const startEditText = () => { setDraftText(intention); setEditingText(true); };
-  const saveEditText = () => { const trimmed = draftText.trim(); if (trimmed) { setIntention(trimmed); setIntentionEdited(true); } setEditingText(false); };
+  const saveEditText = () => { const trimmed = draftText.trim(); if (trimmed) { if (audioKeyRef.current !== `${era.year}|${trimmed}`) setAudioStatus('loading'); setIntention(trimmed); setIntentionEdited(true); } setEditingText(false); };
 
   const closeMail = () => { setMailOpen(false); setMailStatus('idle'); setMailError(''); };
 
@@ -197,7 +200,7 @@ function App() {
     const key = `${product.name}|${era.year}`;
     // only rewrite the suggested phrase when product/era changed and the user didn't write their own
     if (step === 2 && !intentionEdited && key !== phraseKey) refreshPhrase();
-    if (step < 3) { setStep(step + 1); setMaxStep((m) => Math.max(m, step + 1)); } else setScreen('result');
+    if (step < 3) { setStep(step + 1); setMaxStep((m) => Math.max(m, step + 1)); } else { if (audioKeyRef.current !== `${era.year}|${intention}`) setAudioStatus('loading'); setScreen('result'); }
   };
   const back = () => step > 1 ? setStep(step - 1) : setScreen('home');
 
@@ -233,6 +236,13 @@ function App() {
     return (
       <main className="app-shell result-shell" style={{ '--era-sun': eraThemes[era.year].vars['--p-sun'], '--era-accent': eraThemes[era.year].vars['--p-ribbon-bg'] } as React.CSSProperties}>
         <div className="result-backdrop" aria-hidden="true"><div className="result-glow" /><div className={`result-bars ${isPlaying ? 'playing' : ''} ${audioStatus === 'loading' ? 'loading' : ''}`}>{resultBars.map((height, index) => <i key={index} style={{ height: `${height}%`, animationDelay: `${(index % 14) * -0.13}s` }} />)}</div></div>
+        {(audioStatus === 'loading' || audioStatus === 'idle') && (
+          <div className="gen-overlay" role="status" aria-live="polite">
+            <div className="preparing-ring"><span className="brand-icon" style={{ '--brand-icon': `url(${brandIcon})` } as React.CSSProperties} aria-hidden="true" /></div>
+            <h2>Préparation du spot</h2>
+            <p>Écriture de la voix et mixage de la musique…</p>
+          </div>
+        )}
         <TopBar onHome={() => setScreen('home')} onBack={() => setScreen('wizard')} onLibrary={() => setScreen('library')} />
         <div className="result-content">
           <div className="result-heading"><p className="back-link" onClick={() => setScreen('wizard')}><ArrowLeft size={14} /> Retour</p><h1>Et voilà votre spot<br />pour <em>{era.year}</em>,<br /><span className="diffusion-text">{eraDiffusion[era.year] ?? ''}</span></h1></div>

@@ -174,3 +174,14 @@ button { cursor: pointer; }
 .footer-wave { display: block !important; }
 .footer-wave { width: 58px; height: 24px; }
 .footer-wave .brand-icon-image { width: 58px; height: 24px; object-fit: contain; }
+.footer-wave .brand-icon { width: 58px; height: 24px; }
+.brand-icon { display: block; aspect-ratio: 1110 / 468; background: var(--neutral-ink, #232839); -webkit-mask: var(--brand-icon) center / contain no-repeat; mask: var(--brand-icon) center / contain no-repeat; }
+.preparing-ring .brand-icon { width: 96px; background: #e05858; animation: logoBreathe 2.4s ease-in-out infinite; }
+
+/* Full-screen generation overlay */
+.gen-overlay { position: fixed; inset: 0; z-index: 800; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #faf6ee; text-align: center; padding: 24px; }
+.gen-overlay .preparing-ring { width: 190px; height: 190px; margin-bottom: 18px; }
+.gen-overlay .preparing-ring .brand-icon { width: 104px; }
+.gen-overlay h2 { margin: 0; font-size: clamp(26px, 4vw, 40px); color: #232839; }
+.gen-overlay p { margin: 0; color: rgba(35,40,57,.65); font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .04em; }
+@keyframes genFade { from { opacity: 0; } to { opacity: 1; } }
