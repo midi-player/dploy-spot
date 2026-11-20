@@ -53,7 +53,7 @@ const eraDiffusion: Record<string, string> = {
 };
 
 const eras: Era[] = [
-  { name: 'Renaissance', year: '1500', image: 'https://images.pexels.com/photos/22873395/pexels-photo-22873395.jpeg?auto=compress&cs=tinysrgb&h=650&w=940' },
+  { name: 'Moyen Âge', year: '1500', image: 'https://images.pexels.com/photos/22873395/pexels-photo-22873395.jpeg?auto=compress&cs=tinysrgb&h=650&w=940' },
   { name: 'Années 50', year: '1950', image: 'https://images.pexels.com/photos/2927586/pexels-photo-2927586.jpeg?auto=compress&cs=tinysrgb&h=650&w=940' },
   { name: 'Années 80', year: '1980', image: 'https://images.pexels.com/photos/4335773/pexels-photo-4335773.jpeg?auto=compress&cs=tinysrgb&h=650&w=940' },
   { name: 'Années 2020', year: '2020', image: 'https://images.pexels.com/photos/20870797/pexels-photo-20870797.jpeg?auto=compress&cs=tinysrgb&h=650&w=940' },
@@ -202,6 +202,8 @@ function App() {
     if (step === 2 && !intentionEdited && key !== phraseKey) refreshPhrase();
     if (step < 3) { setStep(step + 1); setMaxStep((m) => Math.max(m, step + 1)); } else { if (audioKeyRef.current !== `${era.year}|${intention}`) setAudioStatus('loading'); setScreen('result'); }
   };
+  const [libraryFrom, setLibraryFrom] = useState<'home' | 'wizard' | 'result'>('home');
+  const openLibrary = () => { if (screen !== 'library') setLibraryFrom(screen); setScreen('library'); };
   const back = () => step > 1 ? setStep(step - 1) : setScreen('home');
 
   if (screen === 'home') {
@@ -209,15 +211,17 @@ function App() {
       <main className="landing-shell">
         <header className="landing-nav">
           <Logo onHome={() => setScreen('home')} />
-          <div className="nav-actions"><span className="desktop-only">Votre pub traverse les âges</span><button type="button" className="library-link" onClick={() => setScreen('library')}><Library size={15} /> Mes spots</button></div>
+          <div className="nav-actions"><span className="desktop-only">Votre pub traverse les âges</span><button type="button" className="library-link" onClick={openLibrary}><Library size={15} /> Mes spots</button></div>
         </header>
         <section className="hero">
           <div className="hero-copy">
             <p className="eyebrow"><span className="eyebrow-dot" /> Dploy Audio Lab</p>
-            <h1>Contextual audio,<br /><em>Real Impact.</em></h1>
-            <div className="toggle-row"><span className="active-line">In store</span><span>Out Loud</span></div>
-            <p className="hero-description">Créez des spots audio contextualisés<br className="desktop-only" /> dans le temps, en quelques clics.</p>
-            <button className="primary-button hero-button" onClick={begin}>Commencer <ArrowRight size={17} /></button>
+            <div className="hero-stack">
+              <h1>Contextual audio,<br /><em>Real Impact.</em></h1>
+              <div className="toggle-row"><span className="active-line">In store</span><span>Out Loud</span></div>
+              <p className="hero-description">Créez des spots audio contextualisés dans le temps, en quelques clics.</p>
+              <button className="primary-button hero-button" onClick={begin}>Commencer <ArrowRight size={26} /></button>
+            </div>
           </div>
           <div className="orbit-stage">
             <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" />
@@ -230,7 +234,7 @@ function App() {
     );
   }
 
-  if (screen === 'library') return <LibraryScreen onHome={() => setScreen('home')} onNew={begin} onEdit={(spot) => { setProduct(products.find((item) => item.name === spot.product) ?? { ...products[0], name: spot.product }); setEra(eras.find((item) => item.year === spot.eraYear) ?? eras[0]); setIntention(spot.text); setIntentionEdited(true); setPhraseKey(''); setStep(3); setMaxStep(3); setScreen('wizard'); }} />;
+  if (screen === 'library') return <LibraryScreen onHome={() => setScreen('home')} onBack={() => setScreen(libraryFrom)} onNew={begin} onEdit={(spot) => { setProduct(products.find((item) => item.name === spot.product) ?? { ...products[0], name: spot.product }); setEra(eras.find((item) => item.year === spot.eraYear) ?? eras[0]); setIntention(spot.text); setIntentionEdited(true); setPhraseKey(''); setStep(3); setMaxStep(3); setScreen('wizard'); }} />;
 
   if (screen === 'result') {
     return (
@@ -243,9 +247,10 @@ function App() {
             <p>Écriture de la voix et mixage de la musique…</p>
           </div>
         )}
-        <TopBar onHome={() => setScreen('home')} onBack={() => setScreen('wizard')} onLibrary={() => setScreen('library')} />
+        <TopBar onHome={() => setScreen('home')} onBack={() => setScreen('wizard')} onLibrary={openLibrary} />
+        <p className="back-link page-back" onClick={() => setScreen('wizard')}><ArrowLeft size={28} /> Retour</p>
         <div className="result-content">
-          <div className="result-heading"><p className="back-link" onClick={() => setScreen('wizard')}><ArrowLeft size={14} /> Retour</p><h1>Et voilà votre spot<br />pour <em>{era.year}</em>,<br /><span className="diffusion-text">{eraDiffusion[era.year] ?? ''}</span></h1></div>
+          <div className="result-heading"><h1>Et voilà votre spot<br />pour <em>{era.year}</em>,<br /><span className="diffusion-text">{eraDiffusion[era.year] ?? ''}</span></h1></div>
           <div className="result-grid">
             <div className="result-details">
               <div className="ad-script"><p className="ad-script-label">Le texte de votre pub</p>{editingText ? <textarea className="ad-script-input" value={draftText} maxLength={300} autoFocus onChange={(e) => setDraftText(e.target.value)} /> : <p className="ad-script-text">{intention}</p>}<div className="ad-script-actions">{editingText ? <><button className="secondary-button" onClick={saveEditText} disabled={!draftText.trim()}><Check size={14} /> Valider</button><button className="secondary-button" onClick={() => setEditingText(false)}><X size={14} /> Annuler</button></> : <><button className="secondary-button" onClick={regenerateText} disabled={audioStatus === 'loading'}><RefreshCw size={14} /> Régénérer</button><button className="secondary-button" onClick={startEditText} disabled={audioStatus === 'loading'}><Pencil size={14} /> Modifier</button></>}</div></div>
@@ -274,15 +279,15 @@ function App() {
 
   return (
     <main className="app-shell wizard-shell">
-      <TopBar onHome={() => setScreen('home')} onLibrary={() => setScreen('library')} />
+      <TopBar onHome={() => setScreen('home')} onLibrary={openLibrary} />
       <div className="wizard-layout">
-        <aside className="wizard-aside"><p className="back-link" onClick={back}><ArrowLeft size={14} /> Retour</p><p className="aside-kicker">Vos pubs à travers le temps</p><h2>Donnez une autre dimension à votre message.</h2></aside>
+        <aside className="wizard-aside"><p className="back-link" onClick={back}><ArrowLeft size={28} /> Retour</p><p className="aside-kicker">Vos pubs à travers le temps</p><h2>Donnez une autre dimension à votre message.</h2></aside>
         <section className="wizard-panel">
           <Progress current={step} maxStep={maxStep} onSelect={goToStep} />
           {step === 1 && <ProductStep selected={product.name} onSelect={(item) => setProduct(item)} onOpenCustom={() => setCustomOpen(true)} />}
           {step === 2 && <EraStep selected={era.name} onSelect={(item) => setEra(item)} />}
           {step === 3 && <IntentStep value={intention} onChange={(value, manual = true) => { setIntention(value); setIntentionEdited(manual); }} product={product.name} eraYear={era.year} />}
-          <div className="wizard-footer"><span>{step === 3 ? 'Prêt pour le voyage ?' : 'Étape suivante'}</span><button className="primary-button" onClick={next}>{step === 3 ? <><AudioLines size={16} /> Générer</> : <>Suivant <ArrowRight size={16} /></>}</button></div>
+          <div className="wizard-footer"><button className="primary-button" onClick={next}>{step === 3 ? <><AudioLines size={26} /> Générer</> : <>Suivant <ArrowRight size={26} /></>}</button></div>
         </section>
       </div>
       {customOpen && (
@@ -301,12 +306,12 @@ function App() {
 }
 
 function Logo({ small = false, onHome }: { small?: boolean; onHome?: () => void }) { const img = <img className="logo-claim" src={claimLogo} alt="Dploy – In store, Out Loud" />; return <div className={`logo ${small ? 'logo-small' : ''}`}>{onHome ? <button type="button" className="logo-link" onClick={onHome} aria-label="Retour à l'accueil">{img}</button> : img}</div>; }
-function TopBar({ onBack, onLibrary, onHome }: { onBack?: () => void; onLibrary?: () => void; onHome?: () => void }) { return <header className="topbar"><Logo onHome={onHome} /><span className="topbar-title">Vos pubs à travers le temps</span><div className="topbar-actions">{onLibrary ? <button type="button" className="library-link" onClick={onLibrary}><Library size={15} /> Mes spots</button> : null}{onBack ? <button className="icon-button" onClick={onBack}><ArrowLeft size={15} /></button> : null}</div></header>; }
+function TopBar({ onBack, onLibrary, onHome }: { onBack?: () => void; onLibrary?: () => void; onHome?: () => void }) { return <header className="topbar"><Logo onHome={onHome} /><span className="topbar-title">Vos pubs à travers le temps</span><div className="topbar-actions">{onLibrary ? <button type="button" className="library-link" onClick={onLibrary}><Library size={15} /> Mes spots</button> : null}</div></header>; }
 function Progress({ current, maxStep, onSelect }: { current: number; maxStep: number; onSelect: (step: number) => void }) { return <div className="progress">{steps.map((label, index) => <button type="button" className={`progress-step ${index + 1 <= current ? 'done' : ''} ${index + 1 <= maxStep && index + 1 !== current ? 'reachable' : ''}`} key={label} disabled={index + 1 > maxStep || index + 1 === current} onClick={() => onSelect(index + 1)}><span>{index + 1 < current ? <Check size={11} /> : index + 1}</span><b>{label}</b></button>)}</div>; }
 function ProductStep({ selected, onSelect, onOpenCustom }: { selected: string; onSelect: (item: Product) => void; onOpenCustom: () => void }) { const isCustom = !products.some((item) => item.name === selected); return <div className="step-content"><p className="section-label">01 / Sélection</p><h1>Que voulez-vous<br />promouvoir ?</h1><p className="step-intro">Choisissez un produit pour lequel créer votre spot.</p><div className="product-grid">{products.map((item) => <button className={`product-card ${selected === item.name ? 'selected' : ''}`} key={item.name} onClick={() => onSelect(item)}><div className="product-image">{item.image ? <img src={item.image} alt="" /> : <Sparkles size={26} className="product-placeholder" />}</div><span>{item.name}</span>{selected === item.name && <i><Check size={11} /></i>}</button>)}<button className={`product-card custom-card ${isCustom ? 'selected' : ''}`} onClick={onOpenCustom}><span className="custom-ou">OU</span>{isCustom ? <span className="custom-value">{selected}</span> : <span className="custom-hint">Tapez votre<br />propre produit</span>}{isCustom && <i><Check size={11} /></i>}</button></div></div>; }
 function EraStep({ selected, onSelect }: { selected: string; onSelect: (item: Era) => void }) { return <div className="step-content"><p className="section-label">02 / Atmosphère</p><h1>Choisissez maintenant<br />une époque</h1><p className="step-intro">Chaque époque a son propre ton, son style, ses émotions.</p><div className="era-grid">{eras.map((item) => <button className={`era-card ${selected === item.name ? 'selected' : ''}`} key={item.name} onClick={() => onSelect(item)}><img src={item.image} alt="" /><span>· {item.name}</span><i>{selected === item.name ? <Check size={11} /> : ''}</i></button>)}</div></div>; }
 function IntentStep({ value, onChange, product, eraYear }: { value: string; onChange: (value: string, manual?: boolean) => void; product: string; eraYear: string }) { return <div className="step-content intent-content"><p className="section-label">03 / Direction</p><h1>Voici votre intention</h1><p className="step-intro">Décrivez le message que votre publicité doit faire passer.</p><div className="intent-layout"><div><div className="textarea-wrap"><button className="ai-icon" type="button" title="Générer une phrase avec l’IA" onClick={() => onChange(generatePhrase(product, eraYear, value), false)}><Sparkles size={16} /></button><textarea value={value} maxLength={300} onChange={(event) => onChange(event.target.value)} /><span>{value.length}/300</span></div><button className="ai-button" type="button" onClick={() => onChange(generatePhrase(product, eraYear, value), false)}><RefreshCw size={14} /> Régénérer</button></div><div className="preparing"><div className="preparing-ring"><img className="brand-icon-image" src={brandIcon} alt="Dploy" /></div><span>Préparation<br />du voyage temporel...</span></div></div></div>; }
-function OrbitCard({ className, label, image }: { className: string; label: string; image: string }) { return <div className={className}><img key={image} className="orbit-img" src={image} alt="" /><span key={label} className="orbit-label">{label}</span><b>+</b></div>; }
+function OrbitCard({ className, label, image, onClick }: { className: string; label: string; image: string; onClick?: () => void }) { return <div className={className} onClick={onClick} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.(); }}><img key={image} className="orbit-img" src={image} alt="" /><span key={label} className="orbit-label">{label}</span></div>; }
 
 const orbitPool = [...eras.map((item) => ({ label: item.name, image: item.image })), ...products.map((item) => ({ label: item.name, image: item.image }))];
 const orbitSlots = ['castle-card', 'banana-card', 'chips-card', 'phone-card', 'woman-card'];
@@ -325,7 +330,7 @@ function OrbitCards() {
     const slot = tick % orbitSlots.length;
     setCursor((current) => current.map((value, index) => (index === slot ? (Math.max(...current) + 1) % orbitPool.length : value)));
   }, [tick]);
-  return <>{orbitSlots.map((slot, index) => { const item = orbitPool[cursor[index] % orbitPool.length]; return <OrbitCard key={slot} className={`orbit-card ${slot}`} label={item.label} image={item.image} />; })}</>;
+  return <>{orbitSlots.map((slot, index) => { const item = orbitPool[cursor[index] % orbitPool.length]; return <OrbitCard key={slot} className={`orbit-card ${slot}`} label={item.label} image={item.image} onClick={() => setCursor((current) => current.map((value, i) => (i === index ? (Math.max(...current) + 1) % orbitPool.length : value)))} />; })}</>;
 }
 function Detail({ label, value, icon }: { label: string; value: string; icon: string }) { return <div className="detail"><span className="detail-icon">{icon}</span><div><small>{label}</small><b>{value}</b></div></div>; }
 
@@ -333,7 +338,7 @@ function Root() { return <App />; }
 
 export default Root;
 
-function LibraryScreen({ onHome, onNew, onEdit }: { onHome: () => void; onNew: () => void; onEdit: (spot: SavedSpot) => void }) {
+function LibraryScreen({ onHome, onBack, onNew, onEdit }: { onHome: () => void; onBack: () => void; onNew: () => void; onEdit: (spot: SavedSpot) => void }) {
   const [open, setOpen] = useState<SavedSpot | null>(null);
   const [openUrl, setOpenUrl] = useState('');
   useEffect(() => { if (!open) { setOpenUrl(''); return; } const u = URL.createObjectURL(open.blob); setOpenUrl(u); return () => URL.revokeObjectURL(u); }, [open]);
@@ -355,7 +360,8 @@ function LibraryScreen({ onHome, onNew, onEdit }: { onHome: () => void; onNew: (
   };
   return (
     <main className="app-shell library-shell">
-      <TopBar onHome={onHome} onBack={onHome} />
+      <TopBar onHome={onHome} />
+      <p className="back-link page-back" onClick={onBack}><ArrowLeft size={28} /> Retour</p>
       <div className="library-content">
         <p className="section-label">Bibliothèque</p>
         <h1>Mes spots</h1>
