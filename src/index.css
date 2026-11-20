@@ -226,9 +226,43 @@ button { cursor: pointer; }
 
 /* Same "Retour" position on every page (matches the wizard) */
 .result-shell, .library-shell { position: relative; }
-.page-back { position: absolute; left: 135px; top: 129px; margin: 0; z-index: 5; }
-.result-content, .library-content { padding-top: 130px; }
+.page-back { position: absolute; left: 110px; top: 162px; margin: 0; z-index: 5; }
+.result-content, .library-content { padding-top: 200px; }
 @media (max-width: 760px) {
   .page-back { left: 20px; top: 92px; }
   .result-content, .library-content { padding-top: 100px; }
+}
+
+/* Keep the footer visible without scrolling */
+@media (min-width: 761px) {
+  .landing-shell { display: flex; flex-direction: column; min-height: 100vh; }
+  .landing-shell .hero { flex: 1 0 auto; min-height: 0; padding-top: 16px; padding-bottom: 16px; width: 100%; box-sizing: border-box; }
+  .landing-shell .orbit-stage { width: min(52vw, 610px, max(360px, calc(100vh - 300px))); }
+  .landing-shell .landing-nav, .landing-shell .landing-footer { flex: none; width: 100%; box-sizing: border-box; }
+  .landing-footer { padding-top: 14px; padding-bottom: 14px; }
+}
+
+/* Shorter screens / browser at 100% on a laptop: compact so the footer stays visible */
+@media (min-width: 761px) and (max-height: 820px) {
+  .landing-shell .eyebrow { margin-bottom: 14px; }
+  .landing-shell .hero h1 { font-size: clamp(40px, 6.4vh, 62px); }
+  .landing-shell .hero-stack .toggle-row { font-size: 20px; margin-top: 18px; }
+  .landing-shell .hero-stack .hero-description { font-size: 21px; margin: 16px 0 20px; }
+  .landing-shell .hero-stack .hero-button { padding: 16px 28px; font-size: 20px; }
+  .landing-shell .landing-footer { padding-top: 8px; padding-bottom: 8px; }
+  .landing-shell .landing-footer .logo-claim { height: 44px; }
+  .landing-shell .orbit-stage { width: min(52vw, 610px, max(320px, calc(100vh - 240px))); }
+}
+
+/* Centered tagline in the home header */
+.landing-nav { position: relative; }
+.landing-nav .nav-actions > span.desktop-only { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; }
+
+
+/* Orbit cards scale with the orbit, so they never crowd when the screen is short */
+@media (min-width: 761px) {
+  .orbit-stage { container-type: size; }
+  .orbit-card { width: 22cqw; height: auto; padding: .9cqw; border-radius: 1.3cqw; }
+  .orbit-card img { height: 15.5cqw; border-radius: .9cqw; }
+  .orbit-card span { font-size: max(8px, 1.9cqw); padding: 1.3cqw .7cqw .3cqw; }
 }

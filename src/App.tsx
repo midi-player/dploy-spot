@@ -209,10 +209,7 @@ function App() {
   if (screen === 'home') {
     return (
       <main className="landing-shell">
-        <header className="landing-nav">
-          <Logo onHome={() => setScreen('home')} />
-          <div className="nav-actions"><span className="desktop-only">Votre pub traverse les âges</span><button type="button" className="library-link" onClick={openLibrary}><Library size={15} /> Mes spots</button></div>
-        </header>
+        <TopBar onHome={() => setScreen('home')} onLibrary={openLibrary} />
         <section className="hero">
           <div className="hero-copy">
             <p className="eyebrow"><span className="eyebrow-dot" /> Dploy Audio Lab</p>
@@ -317,6 +314,14 @@ const orbitPool = [...eras.map((item) => ({ label: item.name, image: item.image 
 const orbitSlots = ['castle-card', 'banana-card', 'chips-card', 'phone-card', 'woman-card'];
 
 // Home orbit: one card swaps to the next picture every few seconds, so the "time machine" keeps moving.
+// Next picture for a slot: never one that's already shown on another card.
+function nextCursor(current: number[], slot: number) {
+  const shown = new Set(current.map((value) => value % orbitPool.length));
+  let candidate = Math.max(...current) + 1;
+  while (shown.has(candidate % orbitPool.length)) candidate += 1;
+  return current.map((value, index) => (index === slot ? candidate : value));
+}
+
 function OrbitCards() {
   const [cursor, setCursor] = useState(() => orbitSlots.map((_, slot) => slot * 3));
   const [tick, setTick] = useState(0);
@@ -328,9 +333,9 @@ function OrbitCards() {
   useEffect(() => {
     if (tick === 0) return;
     const slot = tick % orbitSlots.length;
-    setCursor((current) => current.map((value, index) => (index === slot ? (Math.max(...current) + 1) % orbitPool.length : value)));
+    setCursor((current) => nextCursor(current, slot));
   }, [tick]);
-  return <>{orbitSlots.map((slot, index) => { const item = orbitPool[cursor[index] % orbitPool.length]; return <OrbitCard key={slot} className={`orbit-card ${slot}`} label={item.label} image={item.image} onClick={() => setCursor((current) => current.map((value, i) => (i === index ? (Math.max(...current) + 1) % orbitPool.length : value)))} />; })}</>;
+  return <>{orbitSlots.map((slot, index) => { const item = orbitPool[cursor[index] % orbitPool.length]; return <OrbitCard key={slot} className={`orbit-card ${slot}`} label={item.label} image={item.image} onClick={() => setCursor((current) => nextCursor(current, index))} />; })}</>;
 }
 function Detail({ label, value, icon }: { label: string; value: string; icon: string }) { return <div className="detail"><span className="detail-icon">{icon}</span><div><small>{label}</small><b>{value}</b></div></div>; }
 
